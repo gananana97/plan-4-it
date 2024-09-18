@@ -47,8 +47,10 @@ const EventForm = () => {
   };
 
   return (
-    <div>
-      <h2>Create Event</h2>
+    <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+  <div className="md:flex">
+    <div className="p-8">
+      <h2 className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">Create Event</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Event Name:</label>
@@ -81,7 +83,9 @@ const EventForm = () => {
           <button type="button" onClick={addGuest}>Add Guest</button>
         </div>
         <button type="submit">Create Event</button>
-      </form>
+        </form>
+        </div>
+      </div>
     </div>
   );
 };
