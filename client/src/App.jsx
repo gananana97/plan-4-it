@@ -1,22 +1,19 @@
-import './App.css';
-// import { Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import EventsPage from './pages/EventsPage';
+import RSVPPage from './pages/RSVPPage';
 
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import EventForm from './components/EventForm';
-import RSVPForm from './components/RSVPForm';
-
-const App = () => {
+function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<EventForm />} />
-        <Route path="/rsvp/:eventId/:guestId" element={<RSVPForm />} />
+        <Route path="/" element={<EventsPage />} />
+        <Route path="/rsvp/:eventId/:guestId" element={<RSVPPage />} />
       </Routes>
     </Router>
   );
-};
+}
 
+export default App;
 
 // function App() {
 //   return (
@@ -26,4 +23,4 @@ const App = () => {
 //   );
 // }
 
-export default App;
+// export default App;

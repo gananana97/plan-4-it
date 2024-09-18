@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import axios from '../api/axios'; // Axios instance with baseURL configured
+
 
 const EventForm = () => {
   const [eventData, setEventData] = useState({
