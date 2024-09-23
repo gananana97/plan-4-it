@@ -68,6 +68,14 @@ button:focus-visible {
   }
 }
 
+.event-page {
+  background-image: url("../assets/photos/event1.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: #fff;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
