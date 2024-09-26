@@ -1,11 +1,9 @@
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import App from './App.jsx';
-import Home from './pages/Home';
-import Matchup from './pages/Matchup';
-import Vote from './pages/Vote';
-import NotFound from './pages/NotFound';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';  // Ensure all paths are correct
+import NotFound from './pages/NotFound.jsx';
 
 const router = createBrowserRouter([
   {
@@ -16,13 +14,12 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />
-      }, {
-        path: '/matchup',
-        element: <Matchup />
-      }, {
-        path: '/matchup/:id',
-        element: <Vote />
       },
+      {
+        path: '/login',
+        element: <Login />
+      },
+      // Other routes here
     ],
   },
 ]);
