@@ -1,13 +1,15 @@
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import App from './App.jsx';
+
 import Home from './pages/Home';
-// import Matchup from './pages/Matchup';
-// import Vote from './pages/Vote';
 import EventsPage from './pages/EventsPage.jsx';
 import RSVPPage from './pages/RSVPPage.jsx';
 import NotFound from './pages/NotFound';
+
+import Login from './pages/Login.jsx';  // Ensure all paths are correct
+
+
 
 const router = createBrowserRouter([
   {
@@ -18,6 +20,7 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />
+
       }, {
         path: '/events',
         element: <EventsPage />
@@ -25,6 +28,11 @@ const router = createBrowserRouter([
         path: '/rsvp/:id',
         element: <RSVPPage />
       },
+      {
+        path: '/login',
+        element: <Login />
+      },
+      // Other routes here
     ],
   },
 ]);
