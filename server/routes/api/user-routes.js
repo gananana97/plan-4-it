@@ -4,12 +4,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../../models/User');
 const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs'); // Import bcryptjs
+const bcrypt = require('bcrypt'); // Import bcryptjs
 const authenticateJWT = require('../../middleware/authenticateJWT');
 
 // CREATE a user (authentication not required, usually used during registration)
 router.post(
-  '/',
+  '/register',
   [
     body('username')
       .notEmpty().withMessage('Username is required')
@@ -39,7 +39,7 @@ router.post(
       });
 
       // Exclude password from response
-      const userResponse = { ...newUser.dataValues };
+      const userResponse = newUser.toObject();
       delete userResponse.password;
 
       res.status(201).json(userResponse);
