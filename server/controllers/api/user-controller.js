@@ -1,4 +1,5 @@
 // controllers/api/user-controller.js
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
@@ -30,4 +31,21 @@ const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });
   }
+};
+
+// Get user profile (protected)
+const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password'); // Exclude password from response
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching user profile' });
+  }
+};
+
+// Exporting the functions
+module.exports = {
+  register,
+  login,
 };

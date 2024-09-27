@@ -1,7 +1,8 @@
 // controllers/index.js
-const apiControllers = require('./api'); // Adjust path if needed
+const apiControllers = require('./api');
+const homeRoutes = require('./home-routes');
 
 module.exports = {
   apiControllers,
-  // Add other controllers here as you create them
+  homeRoutes,
 };

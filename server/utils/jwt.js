@@ -1,4 +1,5 @@
 // utils/jwt.js
+
 const jwt = require('jsonwebtoken');
 
 // Use environment variables for the secret key
