@@ -1,7 +1,8 @@
 const express = require('express');
-const Router = express.Router();
 const { createEvent, getEvents } = require('../controllers/eventController');
 const auth = require('../middleware/authMiddleware'); // JWT auth middleware
+const Event = require('../models/Event');
+const router = express.Router();
 
 // @route   POST /api/events
 // @desc    Create a new event
@@ -13,27 +14,25 @@ router.post('/', auth, createEvent);
 // @access  Public
 router.get('/', getEvents);
 
-const express = require('express');
-const Event = require('../models/Event');
-const router = express.Router();
-
+// commented out since we're referencing the create event from the eventController already
 // Create Event
-router.post('/', async (req, res) => {
-  const { name, description, date, location, userId } = req.body;
-  const event = new Event({ name, description, date, location, createdBy: userId });
-  try {
-    await event.save();
-    res.status(201).send(event);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
+// router.post('/', auth, async (req, res) => {
+//   const { name, description, date, location, userId } = req.body;
+//   const event = new Event({ name, description, date, location, createdBy: userId });
+//   try {
+//     await event.save();
+//     res.status(201).send(event);
+//   } catch (error) {
+//     res.status(400).send(error);
+//   }
+// });
 
 // Update Event
-router.put('/:id', async (req, res) => {
+// added auth for the update route
+router.put('/:id', auth, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
-  const userId = req.body.userId;
+  const userId = req.user.id; // corrected to use the id from the auth 
 
   try {
     const event = await Event.findOne({ _id: id, createdBy: userId });
@@ -47,9 +46,10 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete Event
-router.delete('/:id', async (req, res) => {
+// added auth for the delete route
+router.delete('/:id', auth, async (req, res) => {
   const { id } = req.params;
-  const userId = req.body.userId;
+  const userId = req.user.id;
 
   try {
     const event = await Event.findOneAndDelete({ _id: id, createdBy: userId });
