@@ -38,9 +38,9 @@ function App() {
           </li>
         </ul>
       </nav>
-
+    <div>
       <Routes>
-    <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -56,12 +56,3 @@ function App() {
 
 export default App;
 
-// function App() {
-//   return (
-//     <div className="flex-column justify-center align-center min-100-vh bg-primary">
-//       <Outlet />
-//     </div>
-//   );
-// }
-
-// export default App;
