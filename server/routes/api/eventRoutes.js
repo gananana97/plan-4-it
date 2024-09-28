@@ -1,5 +1,5 @@
 const express = require('express');
-const { createEvent, getEvents } = require('../controllers/eventController');
+const { createEvent, getEvents } = require('../../controllers/eventController');
 const auth = require('../middleware/authMiddleware'); // JWT auth middleware
 const Event = require('../models/Event');
 const router = express.Router();
