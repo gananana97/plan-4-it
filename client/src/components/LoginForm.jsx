@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
 import { loginUser } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ onLogin }) => {
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await loginUser({ id, password });
-      if (response.ok) {
-        const data = await response.json(); 
-        localStorage.setItem('token', data.token);  
-        onLogin();  
-      } else {
-        setError('Invalid credentials');
-      }
+      const data = await loginUser({ email: id, password });
+      localStorage.setItem('token', data.token);  // Store the JWT token
+      onLogin();  // Notify parent component that login is successful
+      navigate('/dashboard');  // Redirect to dashboard after login
     } catch (error) {
-      setError('An error occurred during login');
+      setError('Invalid credentials');
     }
   };
+
   return (
     <div>
       <h2>Login</h2>
