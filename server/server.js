@@ -11,7 +11,8 @@ const app = express();
 
 app.use(cors());
 
-console.log(process.env.JWT_SECRET);
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
 
 // Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: true }));

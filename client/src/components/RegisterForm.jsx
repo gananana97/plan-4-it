@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { registerUser } from '../utils/api'; 
+import { useNavigate } from 'react-router-dom'; 
 
 const RegisterForm = ({ onRegister }) => {
   const [name, setName] = useState('');
   const [id, setId] = useState('');  // id = email
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const navigate = useNavigate();  // Initialize navigate
 
   const handleRegister = async (event) => {
     event.preventDefault();
@@ -15,6 +17,7 @@ const RegisterForm = ({ onRegister }) => {
       const data = await registerUser({ username: name, email: id, password });
       localStorage.setItem('token', data.token);  // store JWT token
       onRegister();  // Notify parent component that registration is complete
+      navigate('/dashboard');  // Redirect to dashboard after successful registration
     } catch (error) {
       setError('Registration failed');
     }
