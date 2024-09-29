@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../utils/api';
+import { loginUser } from '../utils/api';
 
 const LoginForm = ({ onLogin }) => {
   const [id, setId] = useState('');
@@ -9,14 +9,18 @@ const LoginForm = ({ onLogin }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await api.post('/login', { id, password });
-      localStorage.setItem('token', response.data.token);  // Store JWT
-      onLogin();  // Notify parent component (e.g., Login.jsx)
+      const response = await loginUser({ id, password });
+      if (response.ok) {
+        const data = await response.json(); 
+        localStorage.setItem('token', data.token);  
+        onLogin();  
+      } else {
+        setError('Invalid credentials');
+      }
     } catch (error) {
-      setError('Invalid credentials');
+      setError('An error occurred during login');
     }
   };
-
   return (
     <div>
       <h2>Login</h2>

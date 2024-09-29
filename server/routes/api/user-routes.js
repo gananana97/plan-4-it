@@ -5,6 +5,7 @@ const router = express.Router();
 const User = require('../../models/User');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt'); // Import bcryptjs
+const jwt = require('jsonwebtoken');  // Added JWT for token generation
 const authenticateJWT = require('../../middleware/authenticateJWT');
 
 // CREATE a user (authentication not required, usually used during registration)
@@ -24,6 +25,7 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation Errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
@@ -41,6 +43,8 @@ router.post(
       // Exclude password from response
       const userResponse = newUser.toObject();
       delete userResponse.password;
+
+      const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       res.status(201).json(userResponse);
     } catch (err) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getToken, logout } from '../utils/auth';
-import api from '../utils/api'; 
+import { getUserInfo } from '../utils/api'; 
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -9,10 +9,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get('/me', {
-          headers: { Authorization: `Bearer ${getToken()}` },  // attach token to request
-        });
-        setUser(response.data);
+        const userData = await getUserInfo(); // Use the getUserInfo API method
+        setUser(userData); 
         setLoading(false);
       } catch (error) {
         console.error('Error fetching user data');

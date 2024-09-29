@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../utils/api'; 
+import { registerUser } from '../utils/api'; 
 
 const RegisterForm = ({ onRegister }) => {
   const [name, setName] = useState('');
@@ -9,10 +9,12 @@ const RegisterForm = ({ onRegister }) => {
 
   const handleRegister = async (event) => {
     event.preventDefault();
+    console.log({ username: name, email: id, password });
     try {
-      const response = await api.post('/register', { name, id, password });  
-      localStorage.setItem('token', response.data.token);  // store JWT token
-      onRegister();  // Notify parent component (Register.jsx) that registration is complete
+      // Pass both username and id (email) to registerUser
+      const data = await registerUser({ username: name, email: id, password });
+      localStorage.setItem('token', data.token);  // store JWT token
+      onRegister();  // Notify parent component that registration is complete
     } catch (error) {
       setError('Registration failed');
     }
@@ -32,7 +34,7 @@ const RegisterForm = ({ onRegister }) => {
         />
         <input
           type="text"
-          placeholder="Enter Your ID"
+          placeholder="Enter Your Email"
           value={id}
           onChange={(event) => setId(event.target.value)}
           required

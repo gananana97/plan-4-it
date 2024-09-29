@@ -1,13 +1,13 @@
 import React from 'react';
 import LoginForm from '../components/LoginForm';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     // redirect after successful login
-    history.push('/dashboard');
+    navigate('/dashboard');
   };
 
   return (
