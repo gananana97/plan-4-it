@@ -37,7 +37,7 @@ const RegisterForm = ({ onRegister }) => {
         />
         <input
           type="text"
-          placeholder="Enter Your ID"
+          placeholder="Enter Your Email"
           value={id}
           onChange={(event) => setId(event.target.value)}
           required

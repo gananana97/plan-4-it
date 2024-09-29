@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import EventsPage from './pages/EventsPage.jsx';
 import RSVPPage from './pages/RSVPPage.jsx';
 import NotFound from './pages/NotFound';
+import Register from './pages/Register.jsx';
 
 import Login from './pages/Login.jsx';  // Ensure all paths are correct
 
@@ -22,15 +23,19 @@ const router = createBrowserRouter([
         element: <Home />
 
       }, {
-        path: '/events',
+        path: 'events',
         element: <EventsPage />
       }, {
-        path: '/rsvp/:id',
+        path: 'rsvp/:id',
         element: <RSVPPage />
       },
       {
-        path: '/login',
+        path: 'login',
         element: <Login />
+      },
+      {
+        path: 'register',
+        element: <Register />,
       },
       // Other routes here
     ],
