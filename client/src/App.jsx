@@ -1,5 +1,5 @@
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import EventsPage from "./pages/EventsPage";
 import RSVPPage from "./pages/RSVPPage";
 
@@ -13,7 +13,7 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <Router>
+    <>
    <nav className="p-4 bg-gray-800 text-white">
         <ul className="flex space-x-4">
           <li>
@@ -50,7 +50,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-    </Router>
+      </>
   );
 }
 
