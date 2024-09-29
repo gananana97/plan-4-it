@@ -1,38 +1,20 @@
+// routes/api/eventRoutes.js
 const express = require('express');
 const { createEvent, getEvents } = require('../../controllers/eventController');
-const auth = require('../../middleware/authMiddleware'); // JWT auth middleware
-const Event = require('../../models/Event');
+const auth = require('../../middleware/authenticateJWT'); // JWT auth middleware
 const router = express.Router();
 
-// @route   POST /api/events
-// @desc    Create a new event
-// @access  Private (user must be authenticated)
+// Create Event (Private)
 router.post('/', auth, createEvent);
 
-// @route   GET /api/events
-// @desc    Get all events
-// @access  Public
+// Get All Events (Public)
 router.get('/', getEvents);
 
-// commented out since we're referencing the create event from the eventController already
-// Create Event
-// router.post('/', auth, async (req, res) => {
-//   const { name, description, date, location, userId } = req.body;
-//   const event = new Event({ name, description, date, location, createdBy: userId });
-//   try {
-//     await event.save();
-//     res.status(201).send(event);
-//   } catch (error) {
-//     res.status(400).send(error);
-//   }
-// });
-
-// Update Event
-// added auth for the update route
+// Update Event (Private)
 router.put('/:id', auth, async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
-  const userId = req.user.id; // corrected to use the id from the auth 
+  const userId = req.user.id;
 
   try {
     const event = await Event.findOne({ _id: id, createdBy: userId });
@@ -45,8 +27,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
-// Delete Event
-// added auth for the delete route
+// Delete Event (Private)
 router.delete('/:id', auth, async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
