@@ -7,6 +7,7 @@ import RSVPPage from './pages/RSVPPage.jsx';
 import NotFound from './pages/NotFound';
 import Register from './pages/Register.jsx';
 import Login from './pages/Login.jsx';
+import DashboardPanel from './components/DashboardPanel.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="rsvp/:id" element={<RSVPPage />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="dashboard" element={<DashboardPanel />} />
         <Route path="*" element={<NotFound />} />  {/* Catch-all route */}
       </Route>
     </Routes>
