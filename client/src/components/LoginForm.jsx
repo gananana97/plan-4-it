@@ -11,17 +11,16 @@ const LoginForm = ({ onLogin }) => {
     try {
       const response = await loginUser({ id, password });
       if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('token', data.token);  // Store JWT
-      onLogin();  // Notify parent component (e.g., Login.jsx)
-    } else {
-      setError('Invalid credentials');
+        const data = await response.json(); 
+        localStorage.setItem('token', data.token);  
+        onLogin();  
+      } else {
+        setError('Invalid credentials');
+      }
+    } catch (error) {
+      setError('An error occurred during login');
     }
-  } catch (error) {
-    setError('An error occurred during login');
-  }
   };
-
   return (
     <div>
       <h2>Login</h2>

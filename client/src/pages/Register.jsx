@@ -1,13 +1,13 @@
 import React from 'react';
 import RegisterForm from '../components/RegisterForm';
-import { useHistory } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom'; 
 
 const Register = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleRegister = () => {
     // after registration, redirect the user to the dashboard or another page
-    history.push('/dashboard');  // redirect after successful registration
+    navigate('/dashboard');  // redirect after successful registration
   };
 
   return (
