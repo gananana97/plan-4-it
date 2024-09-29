@@ -9,15 +9,12 @@ const RegisterForm = ({ onRegister }) => {
 
   const handleRegister = async (event) => {
     event.preventDefault();
+    console.log({ username: name, email: id, password });
     try {
-      const response = await registerUser({ name, id, password });  
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);  // store JWT token
-        onRegister();  // Notify parent component (Register.jsx) that registration is complete
-    } else {
-      setError('Registration failed');
-    }
+      // Pass both username and id (email) to registerUser
+      const data = await registerUser({ username: name, email: id, password });
+      localStorage.setItem('token', data.token);  // store JWT token
+      onRegister();  // Notify parent component that registration is complete
     } catch (error) {
       setError('Registration failed');
     }

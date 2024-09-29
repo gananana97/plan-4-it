@@ -2,9 +2,12 @@ const express = require('express');
 const path = require('path');
 const db = require('./config/connection');
 const routes = require('./routes');
+const dotenv = require('dotenv').config();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+
+console.log(process.env.JWT_SECRET);
 
 // Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +32,10 @@ db.once('open', () => {
     console.log(`API server running on port ${PORT}!`);
   });
 });
+db.on('error', (err) => {
+  console.error('Database connection error:', err);
+});
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
