@@ -1,78 +1,73 @@
-/* Normalize CSS */
-*,
-*::before,
-*::after {
-  box-sizing: border-box; /* Set box-sizing for all elements */
-}
-
-html {
-  line-height: 1.15; /* Adjust line height */
-  -webkit-text-size-adjust: 100%; /* Prevent text size adjustment */
-}
-
+/* styles.css */
 body {
-  margin: 0; /* Remove default margin */
-  padding: 0; /* Remove default padding */
-  color: #1a1a1a; /* Text color */
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Font stack */
-    background-color: grey;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
 }
 
-main {
-  display: block; /* Main element display */
+.container {
+  width: 80%;
+  margin: 0 auto;
 }
 
-h1 {
-  margin: 0; /* Remove default margin */
-  font-size: 2em; /* Change this based on your desired size */
-  text-align: center; /* Center alignment for the heading */
+.header {
+  background-color: #333;
+  color: white;
+  padding: 1rem;
+  text-align: center;
 }
 
-/* Text-level semantics */
-a {
-  background-color: transparent; /* Transparent background for links */
-  color: #16658a; /* Link color */
-  text-decoration: none; /* Remove underline from links */
+nav {
+  display: flex;
+  justify-content: space-around;
+  background-color: #444;
+  padding: 1rem;
 }
 
-a:hover {
-  color: #065b83; /* Hover color for links */
-  text-decoration: underline; /* Underline on hover */
+nav a {
+  color: white;
+  text-decoration: none;
 }
 
-b,
-strong {
-  font-weight: bolder; /* Stronger font weight for bold elements */
+nav a:hover {
+  text-decoration: underline;
 }
 
-code,
-kbd,
-samp {
-  font-size: 1em; /* Font size for code and keyboard inputs */
-  font-family: monospace; /* Monospace font for code */
-}
-
-.home-content, .event {
-  background-color: #1b89bc; /* Background color for the home content */
-  border: solid 1px;
-  border-radius: 5px;
-  box-shadow: -webkit-box-shadow: 5px 5px 15px 5px #000000; 
-  box-shadow: 5px 5px 15px 5px #000000;
-  
-}
-
-input {
-  border-radius: 5px;
+.main-content {
+  background-color: white;
+  padding: 2rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 button {
-  border-radius: 5px;
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.nav-link {
-padding-right: 10px;
-display: inline-flex;
-color: black;
+button:hover {
+  background-color: #218838;
 }
 
+input[type="text"], input[type="password"], input[type="email"] {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+}

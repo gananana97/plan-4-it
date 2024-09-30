@@ -5,7 +5,6 @@ const cors = require('cors');
 const db = require('./config/connection');
 const routes = require('./routes');
 
-
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -16,10 +15,8 @@ app.use(cors({
   credentials: true, // Allow credentials (cookies, headers)
 }));
 
-
-
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
-
+// Log the JWT secret to verify it's loaded
+console.log("JWT_SECRET:", process.env.JWT_SECRET);  // This should log the secret
 
 // Middleware for parsing request bodies
 app.use(express.urlencoded({ extended: true }));
@@ -31,8 +28,6 @@ app.use(routes);
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
-
-  // Serve the index.html file for all routes not matched
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
   });
@@ -47,7 +42,6 @@ db.once('open', () => {
 db.on('error', (err) => {
   console.error('Database connection error:', err);
 });
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {

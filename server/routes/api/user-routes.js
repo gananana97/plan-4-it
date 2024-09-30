@@ -19,12 +19,34 @@ router.post('/register', [
 
   try {
     const { username, email, password } = req.body;
+
+    // Check if user with the same email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'User with this email already exists' });
+    }
+
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Check if JWT_SECRET exists, fallback for testing (optional)
+    const jwtSecret = process.env.JWT_SECRET || 'fallbackSecret';  // Add fallback secret for debugging
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is not defined');
+      return res.status(500).json({ message: 'Server configuration error' });
+    }
+
+    // Create new user
     const newUser = await User.create({ username, email, password: hashedPassword });
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Create JWT token
+    const token = jwt.sign({ id: newUser._id }, jwtSecret, { expiresIn: '1h' });
+
+    // Return new user and token
     res.status(201).json({ user: { id: newUser._id, username, email }, token });
   } catch (err) {
-    res.status(500).json({ message: 'Error creating user' });
+    console.error('Error creating user:', err); // Log the actual error to console
+    res.status(500).json({ message: 'Error creating user', error: err.message });
   }
 });
 
@@ -40,33 +62,33 @@ router.post('/login', [
 
   const { email, password } = req.body;
   try {
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Compare passwords
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    // Check if JWT_SECRET exists, fallback for testing (optional)
+    const jwtSecret = process.env.JWT_SECRET || 'fallbackSecret';  // Add fallback secret for debugging
+    if (!jwtSecret) {
+      console.error('JWT_SECRET is not defined');
+      return res.status(500).json({ message: 'Server configuration error' });
+    }
+
+    // Create JWT token
+    const token = jwt.sign({ id: user._id }, jwtSecret, { expiresIn: '1h' });
+
+    // Return user and token
     res.status(200).json({ user: { id: user._id, email: user.email, username: user.username }, token });
   } catch (err) {
-    res.status(500).json({ message: 'Error logging in' });
-  }
-});
-
-// Fetch current user info
-router.get('/user', authenticateJWT, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json({ username: user.username, email: user.email });
-  } catch (err) {
-    res.status(500).json({ message: 'Error fetching user info' });
+    console.error('Error logging in:', err); // Log the actual error
+    res.status(500).json({ message: 'Error logging in', error: err.message });
   }
 });
 
