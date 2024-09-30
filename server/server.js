@@ -9,7 +9,14 @@ const routes = require('./routes');
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // The frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow Authorization header
+  credentials: true, // Allow credentials (cookies, headers)
+}));
+
+
 
 console.log("JWT_SECRET:", process.env.JWT_SECRET);
 

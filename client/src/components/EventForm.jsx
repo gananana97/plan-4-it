@@ -35,7 +35,7 @@ const EventForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/create-event", eventData);
+      const response = await axios.post("/events", eventData); // Updated endpoint
 
       alert("Event created and invitations sent!");
     } catch (error) {

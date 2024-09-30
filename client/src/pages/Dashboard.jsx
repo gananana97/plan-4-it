@@ -1,10 +1,10 @@
 import React from 'react';
-import Dashboard from '../components/DashboardPanel';
+import DashboardPanel from '../components/DashboardPanel';  // Import the panel
 
 const DashboardPage = () => {
   return (
     <div>
-      <Dashboard />
+      <DashboardPanel />  {/* Render the DashboardPanel */}
     </div>
   );
 };

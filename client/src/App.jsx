@@ -1,29 +1,57 @@
-import { Outlet, Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import EventsPage from './pages/EventsPage';
+import EventDetails from './pages/EventDetails';  // Import EventDetails for viewing an event
+import EditEvent from './pages/EditEvent';  // Import EditEvent for editing an event
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Header from './components/Header';
+import { UserContext } from './context/UserContext';
 import './App.css';
 
 function App() {
+  const [user, setUser] = useState(null);
+
+  // Load user from localStorage on page load (if token exists)
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userInfo = localStorage.getItem('user');  // Retrieve user data from localStorage
+    if (token && userInfo) {
+      const parsedUser = JSON.parse(userInfo);
+      setUser(parsedUser);  // Set user state from localStorage data
+    }
+  }, []);
+
+  // Logout function to clear user session
+  const logout = () => {
+    localStorage.removeItem('token');  // Clear JWT token
+    localStorage.removeItem('user');  // Clear user data
+    setUser(null);  // Clear user state
+  };
+
   return (
-    <>
+    <UserContext.Provider value={{ user, setUser, logout }}>
+      <Header title="Plan-4-It" />
       <nav className="p-4 bg-gray-800 text-white">
         <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="hover:underline">Home</Link>
-          </li>
-          <li>
-            <Link to="/events" className="hover:underline">Events</Link>
-          </li>
-          <li>
-            <Link to="/login" className="hover:underline">Login</Link>
-          </li>
-          <li>
-            <Link to="/register" className="hover:underline">Register</Link>
-          </li>
+          <li><Link to="/" className="hover:underline">Home</Link></li>
+          <li><Link to="/events" className="hover:underline">Events</Link></li>
+          <li><Link to="/dashboard" className="hover:underline">Dashboard</Link></li>
         </ul>
       </nav>
-      <div>
-        <Outlet />  {/* This will render the child route components */}
-      </div>
-    </>
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/events/:eventId" element={<EventDetails />} />  {/* View Event Details */}
+        <Route path="/events/edit/:eventId" element={<EditEvent />} />  {/* Edit Event */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </UserContext.Provider>
   );
 }
 

@@ -1,47 +1,47 @@
-import React, { useState } from 'react';
-import { loginUser } from '../utils/api';
+import React, { useState, useContext } from 'react';
+import { loginUser } from '../utils/api';  // API call to login
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
-const LoginForm = ({ onLogin }) => {
-  const [id, setId] = useState('');
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize navigate
+  const { setUser } = useContext(UserContext);  
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const data = await loginUser({ email: id, password });
-      localStorage.setItem('token', data.token);  // Store the JWT token
-      onLogin();  // Notify parent component that login is successful
-      navigate('/dashboard');  // Redirect to dashboard after login
+      const data = await loginUser({ email, password });
+      localStorage.setItem('token', data.token);  // Store JWT token
+      localStorage.setItem('user', JSON.stringify(data.user));  // Store user data as JSON string
+      setUser(data.user);  // Set user in context
+      navigate('/dashboard');  // Navigate to dashboard
     } catch (error) {
-      setError('Invalid credentials');
+      setError(error.response?.data?.error || 'An error occurred. Please try again.');  // Display the error
     }
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Enter Your ID"
-          value={id}
-          onChange={(event) => setId(event.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Enter Your Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        placeholder="Email" 
+        required 
+      />
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)} 
+        placeholder="Password" 
+        required 
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display error */}
+      <button type="submit">Login</button>
+    </form>
   );
 };
 
