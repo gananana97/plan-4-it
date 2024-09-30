@@ -4,6 +4,7 @@ import EventForm from "../components/EventForm";
 import EventList from "../components/EventList";
 import { UserContext } from "../context/UserContext";  // Import UserContext
 
+
 const EventsPage = () => {
   const { user } = useContext(UserContext);
 
