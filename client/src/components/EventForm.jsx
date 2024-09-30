@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "../api/axios"; // Axios instance with baseURL configured
 import { Form, Button, Card } from "react-bootstrap";
+import eventImage from '../assets/photos/event1.jpg';
 
 const EventForm = () => {
   const [eventData, setEventData] = useState({
@@ -45,7 +46,7 @@ const EventForm = () => {
   };
 
   return (
-    <Card className="event max-w-md mx-auto shadow-md">
+    <Card className="event max-w-md mx-auto shadow-md" style={{backgroundImage: `url(${eventImage})`}}>
       <Card.Body>
         <h2 className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-4">
           Create Event
