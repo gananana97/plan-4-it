@@ -1,129 +1,72 @@
-// routes/api/user-routes.js
-
 const express = require('express');
 const router = express.Router();
-const User = require('../../models/User');
 const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcrypt'); // Import bcryptjs
-const jwt = require('jsonwebtoken');  // Added JWT for token generation
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const User = require('../../models/User');
 const authenticateJWT = require('../../middleware/authenticateJWT');
 
-// CREATE a user (authentication not required, usually used during registration)
-router.post(
-  '/register',
-  [
-    body('username')
-      .notEmpty().withMessage('Username is required')
-      .isLength({ min: 3, max: 30 }).withMessage('Username must be between 3 and 30 characters'),
-    body('email')
-      .notEmpty().withMessage('Email is required')
-      .isEmail().withMessage('Invalid email address'),
-    body('password')
-      .notEmpty().withMessage('Password is required')
-      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log('Validation Errors:', errors.array());
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const { username, email, password } = req.body;
-      // Hash the password before saving
-      const hashedPassword = await bcrypt.hash(password, 10);
-
-      const newUser = await User.create({
-        username,
-        email,
-        password: hashedPassword
-      });
-
-      // Exclude password from response
-      const userResponse = newUser.toObject();
-      delete userResponse.password;
-
-      const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-      res.status(201).json(userResponse);
-    } catch (err) {
-      console.error('Error creating user:', err);
-      res.status(500).json({ message: 'An error occurred while creating the user' });
-    }
+// Register a new user
+router.post('/register', [
+  body('username').notEmpty().isLength({ min: 3, max: 30 }),
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty().isLength({ min: 6 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-);
 
-// UPDATE a user (authentication required)
-router.put(
-  '/:id',
-  authenticateJWT,
-  [
-    body('username')
-      .optional()
-      .isLength({ min: 3, max: 30 }).withMessage('Username must be between 3 and 30 characters'),
-    body('email')
-      .optional()
-      .isEmail().withMessage('Invalid email address'),
-    body('password')
-      .optional()
-      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const userId = req.params.id;
-      const { username, email, password } = req.body;
-
-      // Find the user by ID and ensure it's the authenticated user
-      const user = await User.findByPk(userId);
-      if (!user || user.id !== req.user.id) {
-        return res.status(404).json({ message: 'User not found or not authorized' });
-      }
-
-      // UPDATE user details
-      if (username) user.username = username;
-      if (email) user.email = email;
-      if (password) {
-        // Hash the new password before saving
-        user.password = await bcrypt.hash(password, 10);
-      }
-
-      await user.save();
-
-      // Exclude password from response
-      const userResponse = { ...user.dataValues };
-      delete userResponse.password;
-
-      res.json(userResponse);
-    } catch (err) {
-      console.error('Error updating user:', err);
-      res.status(500).json({ message: 'An error occurred while updating the user' });
-    }
-  }
-);
-
-// DELETE a user (authentication required)
-router.delete('/:id', authenticateJWT, async (req, res) => {
   try {
-    const userId = req.params.id;
+    const { username, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({ username, email, password: hashedPassword });
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(201).json({ user: { id: newUser._id, username, email }, token });
+  } catch (err) {
+    res.status(500).json({ message: 'Error creating user' });
+  }
+});
 
-    // Find the user by ID and ensure it's the authenticated user
-    const user = await User.findByPk(userId);
-    if (!user || user.id !== req.user.id) {
-      return res.status(404).json({ message: 'User not found or not authorized' });
+// Login a user
+router.post('/login', [
+  body('email').notEmpty().isEmail(),
+  body('password').notEmpty(),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    // DELETE user
-    await user.destroy();
-    res.status(204).send();
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ user: { id: user._id, email: user.email, username: user.username }, token });
   } catch (err) {
-    console.error('Error deleting user:', err);
-    res.status(500).json({ message: 'An error occurred while deleting the user' });
+    res.status(500).json({ message: 'Error logging in' });
+  }
+});
+
+// Fetch current user info
+router.get('/user', authenticateJWT, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ username: user.username, email: user.email });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching user info' });
   }
 });
 

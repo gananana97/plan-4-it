@@ -1,48 +1,47 @@
-import React, { useState } from 'react';
-import { loginUser } from '../utils/api';
+import React, { useState, useContext } from 'react';
+import { loginUser } from '../utils/api';  // API call to login
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
-const LoginForm = ({ onLogin }) => {
-  const [id, setId] = useState('');
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+  const { setUser } = useContext(UserContext);  
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const response = await loginUser({ id, password });
-      if (response.ok) {
-        const data = await response.json(); 
-        localStorage.setItem('token', data.token);  
-        onLogin();  
-      } else {
-        setError('Invalid credentials');
-      }
+      const data = await loginUser({ email, password });
+      localStorage.setItem('token', data.token);  // Store JWT token
+      localStorage.setItem('user', JSON.stringify(data.user));  // Store user data as JSON string
+      setUser(data.user);  // Set user in context
+      navigate('/dashboard');  // Navigate to dashboard
     } catch (error) {
-      setError('An error occurred during login');
+      setError(error.response?.data?.error || 'An error occurred. Please try again.');  // Display the error
     }
   };
+
   return (
-    <div>
-      <h2>Login</h2>
-      {error && <p>{error}</p>}
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          placeholder="Enter Your ID"
-          value={id}
-          onChange={(event) => setId(event.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Enter Your Password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form onSubmit={handleLogin}>
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        placeholder="Email" 
+        required 
+      />
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)} 
+        placeholder="Password" 
+        required 
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* Display error */}
+      <button type="submit">Login</button>
+    </form>
   );
 };
 

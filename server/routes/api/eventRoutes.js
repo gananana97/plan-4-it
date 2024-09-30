@@ -1,53 +1,76 @@
 const express = require('express');
 const { createEvent, getEvents } = require('../../controllers/eventController');
-const auth = require('../../middleware/authMiddleware'); // JWT auth middleware
-const Event = require('../../models/Event');
+const authenticateJWT = require('../../middleware/authenticateJWT'); // JWT auth middleware
+const Event = require('../../models/Event'); // Import the Event model
 const router = express.Router();
 
-// @route   POST /api/events
-// @desc    Create a new event
-// @access  Private (user must be authenticated)
-router.post('/', auth, createEvent);
-
-// @route   GET /api/events
-// @desc    Get all events
-// @access  Public
-router.get('/', getEvents);
-
-// commented out since we're referencing the create event from the eventController already
-// Create Event
-// router.post('/', auth, async (req, res) => {
-//   const { name, description, date, location, userId } = req.body;
-//   const event = new Event({ name, description, date, location, createdBy: userId });
-//   try {
-//     await event.save();
-//     res.status(201).send(event);
-//   } catch (error) {
-//     res.status(400).send(error);
-//   }
-// });
-
-// Update Event
-// added auth for the update route
-router.put('/:id', auth, async (req, res) => {
-  const { id } = req.params;
-  const updates = req.body;
-  const userId = req.user.id; // corrected to use the id from the auth 
-
+// Create Event (Private)
+router.post('/', authenticateJWT, async (req, res) => {
   try {
-    const event = await Event.findOne({ _id: id, createdBy: userId });
-    if (!event) return res.status(404).send({ error: 'Unauthorized or Event not found' });
-    Object.assign(event, updates);
-    await event.save();
-    res.send(event);
+    const { eventName, description, date, location } = req.body;
+    const newEvent = new Event({
+      eventName,
+      description,
+      date,
+      location,
+      createdBy: req.user.id // Link event to user
+    });
+    await newEvent.save();
+    res.status(201).json(newEvent);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(500).json({ message: 'Failed to create event' });
   }
 });
 
-// Delete Event
-// added auth for the delete route
-router.delete('/:id', auth, async (req, res) => {
+// Get All Events (Public)
+// router.get('/', getEvents);
+router.get('/', authenticateJWT, async (req, res) => {
+  try {
+    const userId = req.user.id;  // Get the authenticated user's ID
+    const events = await Event.find({ createdBy: userId });  // Filter events by createdBy field
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching events' });
+  }
+});
+
+// Get Event by ID (Public)
+router.get('/:id', async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching event' });
+  }
+});
+
+// Update Event (Private)
+router.put('/:id', authenticateJWT, async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+  const userId = req.user.id;
+
+  console.log(`Received update request for event ${id} by user ${userId}`);  // Log the request
+
+  try {
+    const event = await Event.findOne({ _id: id, createdBy: userId });
+    if (!event) {
+      return res.status(404).json({ error: 'Unauthorized or Event not found' });
+    }
+    Object.assign(event, updates);
+    await event.save();
+    res.json(event);
+  } catch (error) {
+    console.error('Error updating event:', error);
+    res.status(400).json({ message: 'Failed to update event', error });
+  }
+});
+
+// Delete Event (Private)
+router.delete('/:id', authenticateJWT, async (req, res) => {
   const { id } = req.params;
   const userId = req.user.id;
 

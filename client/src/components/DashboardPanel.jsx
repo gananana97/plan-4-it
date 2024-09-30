@@ -1,47 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { getToken, logout } from '../utils/auth';
-import { getUserInfo } from '../utils/api'; 
+import React, { useContext, useState, useEffect } from 'react';
+import { UserContext } from '../context/UserContext';
+import EventList from '../components/EventList';
+import api from '../utils/api';
 
-const Dashboard = () => {
-  const [user, setUser] = useState(null);
+const DashboardPanel = () => {
+  const { user } = useContext(UserContext);  // Access user data from context
+  const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Added error state
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchEvents = async () => {
+      if (!user) return;  // Early return if no user
       try {
-        const userData = await getUserInfo(); // Use the getUserInfo API method
-        if (userData) {
-          setUser(userData);
-        } else {
-          throw new Error('No user data found');
-        }
+        const response = await api.get(`/events?userId=${user.id}`);  // Fetch user-specific events
+        setEvents(response.data);
       } catch (error) {
-        setError('Error fetching user data');
+        console.error('Error fetching events:', error);
+        setError('Failed to load events');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserData();
-  }, []);
+    fetchEvents();
+  }, [user]);
 
-  if (loading) return <p>Loading...</p>;
+  if (!user) {
+    return <div>No user data available. Please log in.</div>;
+  }
+
+  if (loading) return <p>Loading events...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div>
-      {user ? (
-        <>
-          <h1>Welcome, {user.name}!</h1>
-          <p>Email: {user.id}</p>
-          <button onClick={logout}>Logout</button>
-        </>
+      <h1>Welcome, {user.username}!</h1>
+      <h2>Your Upcoming Events</h2>
+      {events.length === 0 ? (
+        <p>No upcoming events</p>
       ) : (
-        <p>No user data available</p>
+        <EventList events={events} />  // Pass events to the EventList component
       )}
     </div>
   );
 };
 
-export default Dashboard;
+export default DashboardPanel;
