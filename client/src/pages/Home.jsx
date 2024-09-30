@@ -1,16 +1,9 @@
-
-import { Link } from 'react-router-dom';  
-import Header from '../components/Header'; 
-import eventImage from '../assets/photos/event1.jpg';
-
+import React from 'react';
 
 const Home = () => {
   return (
     <div>
-
-      <Header title="Welcome to Plan-4-It!" />
-      <div className="home-content" style={{backgroundImage: `url(${eventImage})`}}>
-
+      <div className="home-content">
         <p>
           Organize your events, manage your attendees, and much more with our platform!
         </p>
