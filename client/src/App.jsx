@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Outlet, Link } from "react-router-dom";
 import Home from './pages/Home';
 import EventsPage from './pages/EventsPage';
 import EventDetails from './pages/EventDetails';  // Import EventDetails for viewing an event
@@ -7,9 +7,13 @@ import EditEvent from './pages/EditEvent';  // Import EditEvent for editing an e
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
 import Header from './components/Header';
 import { UserContext } from './context/UserContext';
 import './App.css';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -32,6 +36,30 @@ function App() {
   };
 
   return (
+    <>
+      <div className="min-h-screen">
+        <Navbar bg="dark" variant="dark" expand="lg">
+          <Container>
+            <Nav className="me-auto">
+              <Nav.Link as={Link} to="/">
+                Home
+              </Nav.Link>
+              <Nav.Link as={Link} to="/events">
+                Events
+              </Nav.Link>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+              <Nav.Link as={Link} to="/register">
+                Register
+              </Nav.Link>
+            </Nav>
+          </Container>
+        </Navbar>
+        <Outlet /> {/* This will render the child route components */}
+      </div>
+    </>
+
     <UserContext.Provider value={{ user, setUser, logout }}>
       <Header title="Plan-4-It" />
       <nav className="p-4 bg-gray-800 text-white">

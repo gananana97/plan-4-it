@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import axios from "../api/axios"; // Axios instance with baseURL configured
+import { Form, Button, Card } from "react-bootstrap";
+import eventImage from '../assets/photos/event1.jpg';
 
 const EventForm = () => {
   const [eventData, setEventData] = useState({
@@ -45,10 +45,96 @@ const EventForm = () => {
   };
 
   return (
+    <Card className="event max-w-md mx-auto shadow-md" style={{backgroundImage: `url(${eventImage})`}}>
+      <Card.Body>
+        <h2 className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-4">
+          Create Event
+        </h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="eventName">
+            <Form.Label>Event Name: </Form.Label> <br></br>
+            <Form.Control
+              type="text"
+              name="eventName"
+              value={eventData.eventName}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="description">
+            <Form.Label>Description: </Form.Label>
+            <br></br>
+            <Form.Control
+              as="textarea"
+              name="description"
+              value={eventData.description}
+              onChange={handleChange}
+              required
+              className="mb-2" // Add margin for spacing
+            />
+          </Form.Group>
+
+          <Form.Group controlId="date">
+            <Form.Label>Date: </Form.Label>
+            <br></br>
+            <Form.Control
+              type="date"
+              name="date"
+              value={eventData.date}
+              onChange={handleChange}
+              required
+              className="mb-2" // Add margin for spacing
+            />
+          </Form.Group>
+
+          <Form.Group controlId="location">
+            <Form.Label>Location: </Form.Label>
+            <br></br>
+            <Form.Control
+              type="text"
+              name="location"
+              value={eventData.location}
+              onChange={handleChange}
+              required
+              className="mb-2" // Add margin for spacing
+            />
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Guests: </Form.Label>
+            {eventData.guests.map((guest, index) => (
+              <div key={index} className="mb-2">
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={guest.email}
+                  onChange={(e) => handleGuestChange(index, e)}
+                  required
+                />
+              </div>
+            ))}
+            <Button variant="secondary" onClick={addGuest} className="mb-2">
+              Add Guest
+            </Button>
+            <Button
+              variant="link"
+              className="text-danger p-0"
+              onClick={() => removeGuest(index)}
+            >
+              Remove
+            </Button>
+          </Form.Group>
+
+          <Button variant="primary" type="submit" className="w-100">
+            {" "}
+            {/* Make button full-width */}
+
     <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
       <div className="md:flex">
         <div className="p-8">
           <h2 className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
+
             Create Event
           </h2>
           <form onSubmit={handleSubmit}>
