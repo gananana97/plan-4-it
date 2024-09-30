@@ -2,6 +2,7 @@ import React from "react";
 import EventForm from "../components/EventForm";
 import EventList from "../components/EventList";
 
+
 const EventsPage = () => {
   return (
     <div className="event-page container mx-auto p-4">

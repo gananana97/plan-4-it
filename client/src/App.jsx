@@ -1,27 +1,27 @@
 import { Outlet, Link } from "react-router-dom";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
 import './App.css';
 
 function App() {
   return (
     <>
-      <nav className="p-4 bg-gray-800 text-white">
-        <ul className="flex space-x-4">
-          <li>
-            <Link to="/" className="hover:underline">Home</Link>
-          </li>
-          <li>
-            <Link to="/events" className="hover:underline">Events</Link>
-          </li>
-          <li>
-            <Link to="/login" className="hover:underline">Login</Link>
-          </li>
-          <li>
-            <Link to="/register" className="hover:underline">Register</Link>
-          </li>
-        </ul>
-      </nav>
-      <div>
-        <Outlet />  {/* This will render the child route components */}
+      <div className="min-h-screen">
+        <Navbar bg="dark" variant="dark" expand="lg">
+          <Container>
+           
+         
+              <Nav className="me-auto">
+                <Nav.Link as={Link} to="/">Home</Nav.Link>
+                <Nav.Link as={Link} to="/events">Events</Nav.Link>
+                <Nav.Link as={Link} to="/login">Login</Nav.Link>
+                <Nav.Link as={Link} to="/register">Register</Nav.Link>
+              </Nav>
+          
+          </Container>
+        </Navbar>
+        <Outlet /> {/* This will render the child route components */}
       </div>
     </>
   );
