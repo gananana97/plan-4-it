@@ -22,10 +22,17 @@ const eventSchema = new mongoose.Schema({
   },
   attendees: [
     {
-      type: mongoose.Schema.Types.ObjectId, // List of users who RSVP'd "yes"
-      ref: "User",
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      rsvpStatus: { type: String, enum: ["yes", "no", "maybe"], default: "yes" },
     },
   ],
+  
+  eventStatus: {
+    type: String,
+    enum: ["upcoming", "cancelled", "completed"],
+    default: "upcoming",
+  },
+  
   createdAt: {
     type: Date,
     default: Date.now, // Automatically set the creation date of the event

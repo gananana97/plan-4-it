@@ -2,21 +2,19 @@ import React, { useState } from 'react';
 import { registerUser } from '../utils/api'; 
 import { useNavigate } from 'react-router-dom'; 
 
-const RegisterForm = ({ onRegister }) => {
+const RegisterForm = () => {
   const [name, setName] = useState('');
-  const [id, setId] = useState('');  // id = email
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();  // Initialize navigate
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    console.log({ username: name, email: id, password });
+    console.log({ username: name, email, password });
     try {
-      // Pass both username and id (email) to registerUser
-      const data = await registerUser({ username: name, email: id, password });
+      const data = await registerUser({ username: name, email, password });
       localStorage.setItem('token', data.token);  // store JWT token
-      onRegister();  // Notify parent component that registration is complete
       navigate('/dashboard');  // Redirect to dashboard after successful registration
     } catch (error) {
       setError('Registration failed');
@@ -36,10 +34,10 @@ const RegisterForm = ({ onRegister }) => {
           required
         />
         <input
-          type="text"
+          type="email"
           placeholder="Enter Your Email"
-          value={id}
-          onChange={(event) => setId(event.target.value)}
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
           required
         />
         <input

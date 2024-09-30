@@ -1,14 +1,13 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Update with your backend URL
+  baseURL: 'http://localhost:3001/api',  // Adjust base URL for the backend
 });
 
-// Automatically attach JWT to requests
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;  // Attach token to every request
   }
   return config;
 });
