@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000', // The frontend origin
+  origin: process.env.NODE_ENV === 'production' ? process.env.CLIENT_URL : 'http://localhost:3000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Explicitly allow Authorization header
   credentials: true, // Allow credentials (cookies, headers)
