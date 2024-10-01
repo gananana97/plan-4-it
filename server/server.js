@@ -5,6 +5,7 @@ const cors = require('cors');
 const db = require('./config/connection');
 const routes = require('./routes');
 
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 // Use routes
 app.use(routes);
+
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
