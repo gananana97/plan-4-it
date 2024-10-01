@@ -16,7 +16,7 @@ This will be deployed using Render.
 ## Usage
 You can create events, see other events that have been created, allows guests to RSVP for the created events.
 
-##Live Site
+## Live Site
 [plan-4-it](https://plan-4-it-1.onrender.com/register)
 
 ## Contributing
